@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:14
+    environment:
+      - POSTGRES_USER=account
+      - POSTGRES_PASSWORD=account123
+      - POSTGRES_DB=account_service
+    ports:
+      - "5432:5432"
+    volumes:
+      - data:/var/lib/postgresql/data
+
+  pg-admin:
+    image: dpage/pgadmin4:6
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@email.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+      - PGADMIN_LISTEN_PORT=5050
+
+    ports:
+      - "5050:5050"
+  account_service: 
+    image: account_service
+    ports: 
+      - "8080:8080"
+
+volumes:
+  data:
