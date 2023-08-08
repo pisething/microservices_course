@@ -1,0 +1,29 @@
+version: "3.8"
+services:
+  configserver:
+    image: pisethbank/configserver:latest
+    mem_limit: 700m
+    ports:
+      - "8071:8071"
+    networks:
+      - pisethbanknet
+  account:
+    image: pisethbank/account:latest
+    mem_limit: 700m
+    ports:
+      - "8080:8080"
+    networks:
+      - pisethbanknet
+    depends_on: 
+      - configserver
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 15s
+        max_attempts: 3
+        window: 120s
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+networks:
+  pisethbanknet:
