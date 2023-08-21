@@ -9,5 +9,5 @@ public interface CardService {
 	
 	List<Card> getList();
 	
-	//Loan getById(Long loanNumber);
+	List<Card> getByCustomerId(Long customerId);
 }
