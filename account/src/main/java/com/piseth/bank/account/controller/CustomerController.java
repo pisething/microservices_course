@@ -1,5 +1,7 @@
 package com.piseth.bank.account.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,10 +11,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.piseth.bank.account.dto.CardResponseDTO;
 import com.piseth.bank.account.dto.CustomerDTO;
+import com.piseth.bank.account.dto.CustomerDetailDTO;
+import com.piseth.bank.account.dto.LoanResponseDTO;
 import com.piseth.bank.account.entity.Customer;
 import com.piseth.bank.account.mapper.CustomerMapper;
 import com.piseth.bank.account.service.CustomerService;
+import com.piseth.bank.account.service.client.CardFeignClient;
+import com.piseth.bank.account.service.client.LoanFeignClient;
 
 @RestController
 @RequestMapping("api/customers")
@@ -21,6 +28,12 @@ public class CustomerController {
 	private CustomerService customerService;
 	@Autowired
 	private CustomerMapper customerMapper;
+	
+	@Autowired
+	private CardFeignClient cardFeignClient;
+	
+	@Autowired
+	private LoanFeignClient loanFeignClient;
 	
 	@PostMapping
 	public ResponseEntity<?> saveCustomer(@RequestBody CustomerDTO dto){
@@ -39,6 +52,25 @@ public class CustomerController {
 		return ResponseEntity.ok(customerService.getById(customerId));
 	}
 	
+	@GetMapping("customerDetail/{myCustomerId}")
+	public ResponseEntity<CustomerDetailDTO> getCustomerDetail(@PathVariable("myCustomerId") Long customerId){
+		CustomerDetailDTO dto = new CustomerDetailDTO();
+		Customer customer = customerService.getById(customerId);
+		if(customer == null) {
+			throw new RuntimeException("No customer found with this id");
+		}
+		CustomerDTO customerDTO = customerMapper.toCustomerDTO(customer);
+		
+		List<LoanResponseDTO> loanInfo = loanFeignClient.getLoanInfo(customerId);
+		List<CardResponseDTO> cardInfo = cardFeignClient.getCardInfo(customerId);
+		
+		dto.setCustomer(customerDTO);
+		dto.setLoans(loanInfo);
+		dto.setCards(cardInfo);
+		
+		
+		return ResponseEntity.ok(dto);
+	}
 	
 
 }
