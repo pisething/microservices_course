@@ -39,6 +39,4 @@ public class AccountController {
 		return ResponseEntity.ok(AccountService.getById(accountId));
 	}
 	
-	
-
 }
