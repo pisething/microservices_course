@@ -1,0 +1,99 @@
+version: "3.8"
+services:
+  configserver:
+    image: pisethbank/configserver:latest
+    mem_limit: 700m
+    ports:
+      - "8000:8071"
+    networks:
+      - pisethnetwork
+  eurekaserver:
+    image: pisethbank/eurekaserver:latest
+    mem_limit: 700m
+    ports:
+      - "9000:9000"
+    networks:
+      - pisethnetwork
+    depends_on: 
+      - configserver
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    environment: 
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+  mongodb:
+    image: mvertes/alpine-mongo:latest
+    ports:
+      - "7777:27017"
+    networks:
+      - pisethnetwork
+  account:
+    image: pisethbank/account:latest
+    mem_limit: 700m
+    ports:
+      - "7000:8080"
+    networks:
+      - pisethnetwork
+    depends_on: 
+      - configserver
+      - eurekaserver
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    environment: 
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:9000/eureka/
+  loan:
+    image: pisethbank/loan:latest
+    mem_limit: 700m
+    ports:
+      - "6000:8090"
+    networks:
+      - pisethnetwork
+    depends_on: 
+      - configserver
+      - eurekaserver
+      - mongodb
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    environment: 
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:9000/eureka/
+      MONGODB_HOST_NAME: mongodb
+  card:
+    image: pisethbank/card:latest
+    mem_limit: 700m
+    ports:
+      - "5000:8070"
+    networks:
+      - pisethnetwork
+    depends_on: 
+      - configserver
+      - eurekaserver
+      - mongodb
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    environment: 
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:9000/eureka/
+      MONGODB_HOST_NAME: mongodb    
+networks:
+  pisethnetwork:
