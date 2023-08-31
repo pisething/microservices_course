@@ -21,6 +21,8 @@ import com.piseth.bank.account.service.CustomerService;
 import com.piseth.bank.account.service.client.CardFeignClient;
 import com.piseth.bank.account.service.client.LoanFeignClient;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
 @RestController
 @RequestMapping("api/customers")
 public class CustomerController {
@@ -52,6 +54,7 @@ public class CustomerController {
 		return ResponseEntity.ok(customerService.getById(customerId));
 	}
 	
+	@CircuitBreaker(name = "customerDetailSupport")
 	@GetMapping("customerDetail/{myCustomerId}")
 	public ResponseEntity<CustomerDetailDTO> getCustomerDetail(@PathVariable("myCustomerId") Long customerId){
 		CustomerDetailDTO dto = new CustomerDetailDTO();
