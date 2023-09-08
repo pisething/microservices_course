@@ -38,6 +38,7 @@ public class LoanController {
 	
 	@GetMapping("{customerId}")
 	public ResponseEntity<?> getByCustomerId(@PathVariable Long customerId){
+		System.out.println("=========== Loan service is called ==============");
 		return ResponseEntity.ok(loanService.getByCustomerId(customerId));
 	}
 }

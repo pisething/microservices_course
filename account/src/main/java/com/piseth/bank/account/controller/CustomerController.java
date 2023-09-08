@@ -22,6 +22,8 @@ import com.piseth.bank.account.service.client.CardFeignClient;
 import com.piseth.bank.account.service.client.LoanFeignClient;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
 
 @RestController
 @RequestMapping("api/customers")
@@ -54,9 +56,11 @@ public class CustomerController {
 		return ResponseEntity.ok(customerService.getById(customerId));
 	}
 	
-	@CircuitBreaker(name = "customerDetailSupport")
+	//@CircuitBreaker(name = "customerDetailSupport", fallbackMethod = "getCustomerDetailDefault")
+	@Retry(name = "retryCustomerDetail", fallbackMethod = "getCustomerDetailDefault")
 	@GetMapping("customerDetail/{myCustomerId}")
 	public ResponseEntity<CustomerDetailDTO> getCustomerDetail(@PathVariable("myCustomerId") Long customerId){
+		System.out.println("=========== ++Account Service++ ==============");
 		CustomerDetailDTO dto = new CustomerDetailDTO();
 		Customer customer = customerService.getById(customerId);
 		if(customer == null) {
@@ -75,5 +79,26 @@ public class CustomerController {
 		return ResponseEntity.ok(dto);
 	}
 	
+	public ResponseEntity<CustomerDetailDTO> getCustomerDetailDefault(@PathVariable("myCustomerId") Long customerId, Throwable e){
+		CustomerDetailDTO dto = new CustomerDetailDTO();
+		Customer customer = customerService.getById(customerId);
+		if(customer == null) {
+			throw new RuntimeException("No customer found with this id");
+		}
+		CustomerDTO customerDTO = customerMapper.toCustomerDTO(customer);
+		dto.setCustomer(customerDTO);
+		return ResponseEntity.ok(dto);
+	}
+	
+	
+	@GetMapping("/sayHello")
+	@RateLimiter(name = "sayHelloLimiter", fallbackMethod = "sayHi")
+	public String sayHello() {
+		return "Hello, welcome to PisethBank";
+	}
+	
+	public String sayHi(Throwable t) {
+		return "Hi, welcome to PisethBank";
+	}
 
 }
