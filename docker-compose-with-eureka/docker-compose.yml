@@ -29,6 +29,8 @@ services:
     image: mvertes/alpine-mongo:latest
     ports:
       - "7777:27017"
+    volumes:
+      - './data:/data/db'
     networks:
       - pisethnetwork
   account:
@@ -56,6 +58,28 @@ services:
     mem_limit: 700m
     ports:
       - "6000:8090"
+    networks:
+      - pisethnetwork
+    depends_on: 
+      - configserver
+      - eurekaserver
+      - mongodb
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    environment: 
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:9000/eureka/
+      MONGODB_HOST_NAME: mongodb
+  loan2:
+    image: pisethbank/loan:latest
+    mem_limit: 700m
+    ports:
+      - "6001:8090"
     networks:
       - pisethnetwork
     depends_on: 
