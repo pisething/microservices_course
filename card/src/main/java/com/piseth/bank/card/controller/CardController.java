@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,6 +16,9 @@ import com.piseth.bank.card.entity.Card;
 import com.piseth.bank.card.mapper.CardMapper;
 import com.piseth.bank.card.service.CardService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("api/cards")
 public class CardController {
@@ -37,7 +41,10 @@ public class CardController {
 	}
 	
 	@GetMapping("{customerId}")
-	public ResponseEntity<?> getByCustomerId(@PathVariable Long customerId){
+	public ResponseEntity<?> getByCustomerId(
+			@RequestHeader("pisethbank-correlation-id") String correlationId,
+			@PathVariable Long customerId){
+		log.debug("Correlation id found: {}", correlationId);
 		return ResponseEntity.ok(cardService.getByCustomerId(customerId));
 	}
 }
