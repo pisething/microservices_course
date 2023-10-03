@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,6 +16,9 @@ import com.piseth.bank.loan.entity.Loan;
 import com.piseth.bank.loan.mapper.LoanMapper;
 import com.piseth.bank.loan.service.LoanService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("api/loans")
 public class LoanController {
@@ -37,8 +41,11 @@ public class LoanController {
 	}
 	
 	@GetMapping("{customerId}")
-	public ResponseEntity<?> getByCustomerId(@PathVariable Long customerId){
-		System.out.println("=========== Loan service is called ==============");
+	public ResponseEntity<?> getByCustomerId(
+			@RequestHeader("pisethbank-correlation-id") String correlationId,
+			@PathVariable Long customerId){
+		//System.out.println("=========== Loan service is called ==============");
+		log.debug("Correlation id found: {}", correlationId);
 		return ResponseEntity.ok(loanService.getByCustomerId(customerId));
 	}
 }
