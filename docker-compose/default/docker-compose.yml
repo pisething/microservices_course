@@ -1,29 +1,54 @@
 version: "3.8"
 services:
+  rabbit:
+    image: rabbitmq:3.12-management
+    hostname: rabbitmq
+    container_name: rabbit
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - pisethbanknet
+
   configserver:
-    image: pisethbank/configserver:latest
+    image: pisethbank/configserver:v2
     mem_limit: 700m
+    container_name: configserver-ms
+    healthcheck:
+      test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     ports:
       - "8071:8071"
+    depends_on:
+      rabbit:
+        condition: service_healthy
+    environment:
+      SPRING_RABBITMQ_HOST: rabbit
     networks:
       - pisethbanknet
   account:
-    image: pisethbank/account:latest
+    image: pisethbank/account:v2
     mem_limit: 700m
+    container_name: account-ms
     ports:
       - "8080:8080"
     networks:
       - pisethbanknet
     depends_on: 
-      - configserver
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 15s
-        max_attempts: 3
-        window: 120s
+      configserver:
+        condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: default
       SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+      SPRING_RABBITMQ_HOST: rabbit
 networks:
   pisethbanknet:
