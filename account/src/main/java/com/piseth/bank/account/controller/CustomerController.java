@@ -35,13 +35,13 @@ public class CustomerController {
 	private CustomerService customerService;
 	@Autowired
 	private CustomerMapper customerMapper;
-	
+	/*
 	@Autowired
 	private CardFeignClient cardFeignClient;
 	
 	@Autowired
 	private LoanFeignClient loanFeignClient;
-	
+	*/
 	@PostMapping
 	public ResponseEntity<?> saveCustomer(@RequestBody CustomerDTO dto){
 		Customer customer = customerMapper.toCustomer(dto);
@@ -61,6 +61,7 @@ public class CustomerController {
 	
 	//@CircuitBreaker(name = "customerDetailSupport", fallbackMethod = "getCustomerDetailDefault")
 	//@Retry(name = "retryCustomerDetail", fallbackMethod = "getCustomerDetailDefault")
+	/*
 	@GetMapping("customerDetail/{myCustomerId}")
 	public ResponseEntity<CustomerDetailDTO> getCustomerDetail(
 			@RequestHeader("pisethbank-correlation-id") String correlationId,
@@ -85,7 +86,7 @@ public class CustomerController {
 		
 		return ResponseEntity.ok(dto);
 	}
-	
+	*/
 	public ResponseEntity<CustomerDetailDTO> getCustomerDetailDefault(@PathVariable("myCustomerId") Long customerId, Throwable e){
 		CustomerDetailDTO dto = new CustomerDetailDTO();
 		Customer customer = customerService.getById(customerId);
