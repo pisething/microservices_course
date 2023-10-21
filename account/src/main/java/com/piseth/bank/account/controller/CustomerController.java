@@ -22,9 +22,7 @@ import com.piseth.bank.account.service.CustomerService;
 import com.piseth.bank.account.service.client.CardFeignClient;
 import com.piseth.bank.account.service.client.LoanFeignClient;
 
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
-import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -35,13 +33,13 @@ public class CustomerController {
 	private CustomerService customerService;
 	@Autowired
 	private CustomerMapper customerMapper;
-	/*
+	
 	@Autowired
 	private CardFeignClient cardFeignClient;
 	
 	@Autowired
 	private LoanFeignClient loanFeignClient;
-	*/
+	
 	@PostMapping
 	public ResponseEntity<?> saveCustomer(@RequestBody CustomerDTO dto){
 		Customer customer = customerMapper.toCustomer(dto);
@@ -61,7 +59,7 @@ public class CustomerController {
 	
 	//@CircuitBreaker(name = "customerDetailSupport", fallbackMethod = "getCustomerDetailDefault")
 	//@Retry(name = "retryCustomerDetail", fallbackMethod = "getCustomerDetailDefault")
-	/*
+	
 	@GetMapping("customerDetail/{myCustomerId}")
 	public ResponseEntity<CustomerDetailDTO> getCustomerDetail(
 			@RequestHeader("pisethbank-correlation-id") String correlationId,
@@ -86,7 +84,7 @@ public class CustomerController {
 		
 		return ResponseEntity.ok(dto);
 	}
-	*/
+	
 	public ResponseEntity<CustomerDetailDTO> getCustomerDetailDefault(@PathVariable("myCustomerId") Long customerId, Throwable e){
 		CustomerDetailDTO dto = new CustomerDetailDTO();
 		Customer customer = customerService.getById(customerId);
