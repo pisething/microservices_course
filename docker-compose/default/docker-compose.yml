@@ -13,12 +13,12 @@ services:
       timeout: 5s
       retries: 10
       start_period: 10s
-    networks:
-      - pisethbanknet
+    extends:
+      file: common.yml
+      service: ms-deploy-network
 
   configserver:
     image: pisethbank/configserver:v2
-    mem_limit: 700m
     container_name: configserver-ms
     healthcheck:
       test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
@@ -31,24 +31,67 @@ services:
     depends_on:
       rabbit:
         condition: service_healthy
-    environment:
-      SPRING_RABBITMQ_HOST: rabbit
-    networks:
-      - pisethbanknet
+    extends:
+      file: common.yml
+      service: ms-base
+
+  eurekaserver:
+    image: pisethbank/eurekaserver:v2
+    container_name: eurekaserver-ms
+    healthcheck:
+      test: "curl --fail --silent localhost:9000/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    ports:
+      - "9000:9000"
+    extends:
+      file: common.yml
+      service: ms-base-configserver
+
+  
+
+  mongodb:
+    image: mvertes/alpine-mongo:latest
+    ports:
+      - "7777:27017"
+    volumes:
+      - './data:/data/db'
+    extends:
+      file: common.yml
+      service: ms-deploy-network
+
   account:
     image: pisethbank/account:v2
-    mem_limit: 700m
     container_name: account-ms
     ports:
       - "8080:8080"
-    networks:
-      - pisethbanknet
-    depends_on: 
-      configserver:
-        condition: service_healthy
+    extends:
+      file: common.yml
+      service: ms-base-eurekaserver
+
+  card:
+    image: pisethbank/card:v2
+    container_name: card-ms
+    ports:
+      - "8070:8070"
     environment:
-      SPRING_PROFILES_ACTIVE: default
-      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
-      SPRING_RABBITMQ_HOST: rabbit
+      MONGODB_HOST_NAME: mongodb
+    extends:
+      file: common.yml
+      service: ms-base-eurekaserver
+
+  loan:
+    image: pisethbank/loan:v2
+    container_name: loan-ms
+    ports:
+      - "8090:8090"
+    environment:
+      MONGODB_HOST_NAME: mongodb
+    extends:
+      file: common.yml
+      service: ms-base-eurekaserver
+
 networks:
   pisethbanknet:
