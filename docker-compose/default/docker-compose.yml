@@ -65,6 +65,12 @@ services:
   account:
     image: pisethbank/account:v2
     container_name: account-ms
+    healthcheck:
+      test: "curl --fail --silent localhost:8080/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     ports:
       - "8080:8080"
     extends:
@@ -74,6 +80,12 @@ services:
   card:
     image: pisethbank/card:v2
     container_name: card-ms
+    healthcheck:
+      test: "curl --fail --silent localhost:8070/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     ports:
       - "8070:8070"
     environment:
@@ -85,10 +97,32 @@ services:
   loan:
     image: pisethbank/loan:v2
     container_name: loan-ms
+    healthcheck:
+      test: "curl --fail --silent localhost:8090/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     ports:
       - "8090:8090"
     environment:
       MONGODB_HOST_NAME: mongodb
+    extends:
+      file: common.yml
+      service: ms-base-eurekaserver
+
+  gatewayserver:
+    image: pisethbank/gatewayserver:v2
+    container_name: gatewayserver-ms
+    ports:
+      - "8072:8072"
+    depends_on: 
+      account:
+        condition: service_healthy
+      card:
+        condition: service_healthy
+      loan:
+        condition: service_healthy  
     extends:
       file: common.yml
       service: ms-base-eurekaserver

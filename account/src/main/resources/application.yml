@@ -1,0 +1,24 @@
+server:  port: 8080
+
+spring:
+  application:
+    name: account 
+  profiles:    active: prod
+  config:    import: optional:configserver:http://localhost:8071    datasource:    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: 
+  jpa:    database-platform: org.hibernate.dialect.H2Dialect    hibernate:      ddl-auto: update    show-sql: true
+  h2:    console:      enabled: true        rabbitmq:    host: localhost    port: 5672    username: guest    password: guest    management:  endpoints:    web:      exposure:        include: "*"  health:    livenessstate:      enabled: true    readinessstate:      enabled: true  endpoint:    health:      probes:        enabled: true    shutdown:      enabled: true  info:    env:      enabled: trueeureka:  instance:    prefer-ip-address: true  client:    register-with-eureka: true    fetch-registry: true    service-url:      defaultZone: http://localhost:9000/eureka/
+
+#configuring info endpoint
+info:  app:    name: Account Microservice    description: Piseth Bank Account App
+    version: 1.0.0        resilience4j:  circuitbreaker:    configs:      default:        registerHealthIndicator: true    instances:      customerDetailSupport:        minimumNumberOfCalls: 5        failureRateThreshold: 50        waitDurationInOpenState: 30000        permittedNumberOfCallsInHalfOpenState: 2  retry:    configs:      default:        registerHealthIndicator: true    instances:      retryCustomerDetail:        maxRetryAttempts: 3        waitDuration: 2000    ratelimiter:      configs:        default:          registerHealthIndicator: true      instances:        sayHelloLimiter:          timeoutDuration: 5000          limitRefreshPeriod: 5000          limitForPeriod: 1            
+
+logging:  level:    com:      piseth:        bank:          account: DEBUG
+
+
+
+
+
+
