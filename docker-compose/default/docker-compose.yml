@@ -39,13 +39,13 @@ services:
     image: pisethbank/eurekaserver:v2
     container_name: eurekaserver-ms
     healthcheck:
-      test: "curl --fail --silent localhost:9000/actuator/health/readiness | grep UP || exit 1"
+      test: "curl --fail --silent localhost:9001/actuator/health/readiness | grep UP || exit 1"
       interval: 10s
       timeout: 5s
       retries: 10
       start_period: 10s
     ports:
-      - "9000:9000"
+      - "9001:9001"
     extends:
       file: common.yml
       service: ms-base-configserver
@@ -67,6 +67,12 @@ services:
     container_name: account-ms
     ports:
       - "8080:8080"
+    healthcheck:
+      test: "curl --fail --silent localhost:8080/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     extends:
       file: common.yml
       service: ms-base-eurekaserver
@@ -76,6 +82,12 @@ services:
     container_name: card-ms
     ports:
       - "8070:8070"
+    healthcheck:
+      test: "curl --fail --silent localhost:8070/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     environment:
       MONGODB_HOST_NAME: mongodb
     extends:
@@ -87,8 +99,30 @@ services:
     container_name: loan-ms
     ports:
       - "8090:8090"
+    healthcheck:
+      test: "curl --fail --silent localhost:8090/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     environment:
       MONGODB_HOST_NAME: mongodb
+    extends:
+      file: common.yml
+      service: ms-base-eurekaserver
+  
+  gatewayserver:
+    image: pisethbank/gatewayserver:v2
+    container_name: gatewayserver-ms
+    ports:
+      - "8072:8072"
+    depends_on:
+      account:
+        condition: service_healthy
+      loan:
+        condition: service_healthy
+      card:
+        condition: service_healthy
     extends:
       file: common.yml
       service: ms-base-eurekaserver
