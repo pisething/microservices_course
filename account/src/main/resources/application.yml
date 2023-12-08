@@ -15,7 +15,7 @@ spring:
 info:  app:    name: Account Microservice    description: Piseth Bank Account App
     version: 1.0.0        resilience4j:  circuitbreaker:    configs:      default:        registerHealthIndicator: true    instances:      customerDetailSupport:        minimumNumberOfCalls: 5        failureRateThreshold: 50        waitDurationInOpenState: 30000        permittedNumberOfCallsInHalfOpenState: 2  retry:    configs:      default:        registerHealthIndicator: true    instances:      retryCustomerDetail:        maxRetryAttempts: 3        waitDuration: 2000    ratelimiter:      configs:        default:          registerHealthIndicator: true      instances:        sayHelloLimiter:          timeoutDuration: 5000          limitRefreshPeriod: 5000          limitForPeriod: 1            
 
-logging:  level:    com:      piseth:        bank:          account: DEBUG
+logging:  level:    com:      piseth:        bank:          account: DEBUG  pattern:    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
 
 
 

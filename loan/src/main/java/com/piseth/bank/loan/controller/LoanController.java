@@ -1,5 +1,7 @@
 package com.piseth.bank.loan.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +47,11 @@ public class LoanController {
 			@RequestHeader("pisethbank-correlation-id") String correlationId,
 			@PathVariable Long customerId){
 		//System.out.println("=========== Loan service is called ==============");
-		log.debug("Correlation id found: {}", correlationId);
-		return ResponseEntity.ok(loanService.getByCustomerId(customerId));
+		//log.debug("Correlation id found: {}", correlationId);
+		
+		log.debug("fetchLoanDetail method start");
+		List<Loan> loans = loanService.getByCustomerId(customerId);
+		log.debug("fetchLoanDetail method end");
+		return ResponseEntity.ok(loans);
 	}
 }
