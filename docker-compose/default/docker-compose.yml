@@ -1,5 +1,21 @@
 version: "3.8"
 services:
+
+  postgres: 
+    image: postgres:15   
+    environment:
+      # Environment Variables expecially for Postgres
+      POSTGRES_DB: kdb
+      POSTGRES_USER: kadmin
+      POSTGRES_PASSWORD: kadmin
+    healthcheck:
+      test: "exit 0"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    extends:
+      file: common.yml
+      service: ms-deploy-network
+
   keycloak:
     image: quay.io/keycloak/keycloak:23.0.4
     container_name: keycloak
@@ -8,7 +24,16 @@ services:
     environment:
       KEYCLOAK_ADMIN: "admin"
       KEYCLOAK_ADMIN_PASSWORD: "admin"
+      KC_DB: postgres
+      KC_DB_URL_HOST: postgres
+      KC_DB_URL_DATABASE: kdb
+      KC_DB_PASSWORD: kadmin
+      KC_DB_USERNAME: kadmin
+      KC_DB_SCHEMA: public
     command: "start-dev"
+    depends_on:      
+      postgres:
+        condition: service_healthy
     extends:
       file: common.yml
       service: ms-deploy-network
@@ -71,8 +96,6 @@ services:
       timeout: 5s
       retries: 10
       start_period: 10s
-    ports:
-      - "8080:8080"
     environment:
       SPRING_APPLICATION_NAME: "account"
       OTEL_SERVICE_NAME: "account"
