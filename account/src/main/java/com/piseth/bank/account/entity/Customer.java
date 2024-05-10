@@ -19,4 +19,5 @@ public class Customer {
 	private String email;
 	private String mobileNumber;
 	private LocalDate createDate;
+	private Boolean communicationAlreadySent;
 }
