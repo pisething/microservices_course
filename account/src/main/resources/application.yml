@@ -24,7 +24,7 @@ spring:
       enabled: true
   cloud:
     function:
-      definition: updateCustomerCommuniction
+      definition: updateCustomerCommunication
     stream:
       bindings:
         sendCommunication-out-0:
@@ -32,12 +32,11 @@ spring:
         updateCustomerCommuniction-in-0:
           destination: communication-sent
           group: ${spring.application.name}
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
-    connection-timeout: 10s
+      kafka:
+        binder:
+          brokers:
+          - localhost:9092    
+      
     
       
 management:

@@ -47,7 +47,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-stream-binder-rabbit</artifactId>
+			<artifactId>spring-cloud-stream-binder-kafka</artifactId>
 		</dependency>
 		<!--
 		https://mvnrepository.com/artifact/javax.persistence/javax.persistence-api -->
