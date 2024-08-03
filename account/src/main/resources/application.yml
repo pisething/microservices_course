@@ -29,7 +29,7 @@ spring:
       bindings:
         sendCommunication-out-0:
           destination: send-communication
-        updateCustomerCommuniction-in-0:
+        updateCustomerCommunication-in-0:
           destination: communication-sent
           group: ${spring.application.name}
       kafka:
