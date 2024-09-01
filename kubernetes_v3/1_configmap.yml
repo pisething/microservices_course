@@ -14,4 +14,5 @@ data:
   GATEWAY_APPLICATION_NAME: gatewayserver
   KEYCLOAK_ADMIN: admin
   KEYCLOAK_ADMIN_PASSWORD: admin
+  MONGODB_HOST_NAME: mongodb
   SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: "http://keycloak:9080/realms/master/protocol/openid-connect/certs"

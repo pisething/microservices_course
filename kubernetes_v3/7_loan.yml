@@ -40,6 +40,11 @@ spec:
             configMapKeyRef:
               name: pisethbank-configmap
               key: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+        - name: MONGODB_HOST_NAME
+          valueFrom: 
+            configMapKeyRef:
+              name: pisethbank-configmap
+              key: MONGODB_HOST_NAME
 ---
 apiVersion: v1
 kind: Service

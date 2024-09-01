@@ -18,7 +18,7 @@ spec:
       - name: card
         image: pisethbank/card:v3
         ports:
-        - containerPort: 9000
+        - containerPort: 8070
         env:
         - name: SPRING_APPLICATION_NAME
           valueFrom:
@@ -40,6 +40,11 @@ spec:
             configMapKeyRef:
               name: pisethbank-configmap
               key: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+        - name: MONGODB_HOST_NAME
+          valueFrom: 
+            configMapKeyRef:
+              name: pisethbank-configmap
+              key: MONGODB_HOST_NAME
 ---
 apiVersion: v1
 kind: Service
@@ -51,5 +56,5 @@ spec:
   type: LoadBalancer
   ports:
     - protocol: TCP
-      port: 9000
-      targetPort: 9000
+      port: 8070
+      targetPort: 8070
