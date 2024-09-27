@@ -1,0 +1,25 @@
+deploymentName: card-deployment
+serviceName: card
+appLabel: card
+appName: card
+
+replicaCount: 1
+
+image:
+  repository: pisethbank/card
+  tag: v2
+
+containerPort: 8070
+
+service:
+  type: ClusterIP
+  port: 8070
+  targetPort: 8070
+
+appname_enabled: true
+profile_enabled: true
+config_enabled: true
+eureka_enabled: true
+resouceserver_enabled: false
+otel_enabled: true
+kafka_enabled: false
