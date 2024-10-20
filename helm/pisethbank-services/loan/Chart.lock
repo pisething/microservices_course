@@ -1,0 +1,6 @@
+dependencies:
+- name: pisethbank-common
+  repository: file://../../pisethbank-common
+  version: 0.1.0
+digest: sha256:ffc1d51ec89611892cef23cd5b7937175dc343e26fcf4634f9cf1a95ee3c7103
+generated: "2024-09-26T21:53:03.6624461+07:00"
