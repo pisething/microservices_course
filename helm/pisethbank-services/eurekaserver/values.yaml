@@ -1,0 +1,25 @@
+deploymentName: eurekaserver-deployment
+serviceName: eurekaserver
+appLabel: eurekaserver
+appName: eurekaserver
+
+replicaCount: 1
+
+image:
+  repository: pisethbank/eurekaserver
+  tag: v2
+
+containerPort: 9001
+
+service:
+  type: ClusterIP
+  port: 9001
+  targetPort: 9001
+
+appname_enabled: true
+profile_enabled: false
+config_enabled: true
+eureka_enabled: false
+resouceserver_enabled: false
+otel_enabled: true
+kafka_enabled: false
