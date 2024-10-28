@@ -1,0 +1,27 @@
+dependencies:
+- name: pisethbank-common
+  repository: file://../../pisethbank-common
+  version: 0.1.0
+- name: configserver
+  repository: file://../../pisethbank-services/configserver
+  version: 0.1.0
+- name: eurekaserver
+  repository: file://../../pisethbank-services/eurekaserver
+  version: 0.1.0
+- name: account
+  repository: file://../../pisethbank-services/account
+  version: 0.1.0
+- name: card
+  repository: file://../../pisethbank-services/card
+  version: 0.1.0
+- name: loan
+  repository: file://../../pisethbank-services/loan
+  version: 0.1.0
+- name: gatewayserver
+  repository: file://../../pisethbank-services/gatewayserver
+  version: 0.1.0
+- name: message
+  repository: file://../../pisethbank-services/message
+  version: 0.1.0
+digest: sha256:9e1ad54335109f175aa9bea5a161fa78e16aaf4ab9070aac2db99b4807c07a32
+generated: "2024-10-17T21:40:44.2276912+07:00"
