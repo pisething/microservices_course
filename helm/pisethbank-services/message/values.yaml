@@ -7,7 +7,7 @@ replicaCount: 1
 
 image:
   repository: pisethbank/message
-  tag: v2
+  tag: v3
 
 containerPort: 9010
 

@@ -47,6 +47,7 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
+			<version>1.18.30</version>
 		</dependency>
 
 	</dependencies>
@@ -74,7 +75,7 @@
 				<version>3.3.2</version>
 				<configuration>
 					<to>
-						<image>pisethbank/${project.artifactId}:v2</image>
+						<image>pisethbank/${project.artifactId}:v3</image>
 					</to>
 				</configuration>
 			</plugin>

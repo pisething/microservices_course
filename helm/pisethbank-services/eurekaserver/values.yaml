@@ -7,12 +7,12 @@ replicaCount: 1
 
 image:
   repository: pisethbank/eurekaserver
-  tag: v2
+  tag: v3
 
 containerPort: 9001
 
 service:
-  type: ClusterIP
+  type: LoadBalancer
   port: 9001
   targetPort: 9001
 

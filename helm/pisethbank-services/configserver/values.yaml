@@ -7,7 +7,7 @@ replicaCount: 1
 
 image:
   repository: pisethbank/configserver
-  tag: v2
+  tag: v3
 
 containerPort: 8071
 
